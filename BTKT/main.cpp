@@ -1,4 +1,4 @@
-/* =============================================================
+﻿/* =============================================================
 	INTRODUCTION TO GAME PROGRAMMING SE102
 	
 	SAMPLE 01 - SKELETON CODE 
@@ -34,7 +34,25 @@
 #define TEXTURE_PATH_TANK4 L"tank4.png"
 #define TEXTURE_PATH_TANK5 L"tank5.png"
 
-#define TEXTURE_PATH_BULLET L"bullet1.png"
+#define TEXTURE_PATH_EW1 L"ewhite1.png"
+#define TEXTURE_PATH_EW2 L"ewhite2.png"
+#define TEXTURE_PATH_EW3 L"ewhite3.png"
+#define TEXTURE_PATH_EW4 L"ewhite4.png"
+
+#define TEXTURE_PATH_EG1 L"egreen1.png"
+#define TEXTURE_PATH_EG2 L"egreen2.png"
+#define TEXTURE_PATH_EG3 L"egreen3.png"
+#define TEXTURE_PATH_EG4 L"egreen4.png"
+
+#define TEXTURE_PATH_ER1 L"ered1.png"
+#define TEXTURE_PATH_ER2 L"ered2.png"
+#define TEXTURE_PATH_ER3 L"ered3.png"
+#define TEXTURE_PATH_ER4 L"ered4.png"
+
+#define TEXTURE_PATH_BULLET1 L"bullet1.png"
+#define TEXTURE_PATH_BULLET2 L"bullet2.png"
+#define TEXTURE_PATH_BULLET3 L"bullet3.png"
+#define TEXTURE_PATH_BULLET4 L"bullet4.png"
 
 #define TEXTURE_PATH_MISC L"misc.png"
 
@@ -43,26 +61,51 @@
 #define SCREEN_HEIGHT 240
 
 
+
 using namespace std;
 
 CTank *tank;
-#define TANK_START_X 10.0f
-#define TANK_START_Y 100.0f
+#define TANK_START_X 160.0f
+#define TANK_START_Y 190.0f
 #define TANK_START_VX 0.1f
 #define TANK_START_VY 0.1f
 
+#define E1_START_X 100.0f
+#define E1_START_Y 100.0f
+#define E1_START_VX 0.0f
+#define E1_START_VY 0.0f
 
 
+vector<CEnemy*> enemys;
 LPTEXTURE texTank1 = NULL;
 LPTEXTURE texTank2 = NULL;
 LPTEXTURE texTank3 = NULL;
 LPTEXTURE texTank4 = NULL;
 LPTEXTURE texTank5 = NULL;
 
+LPTEXTURE texEW1 = NULL;
+LPTEXTURE texEW2 = NULL;
+LPTEXTURE texEW3 = NULL;
+LPTEXTURE texEW4 = NULL;
 
-LPTEXTURE texBullet = NULL;
+LPTEXTURE texEG1 = NULL;
+LPTEXTURE texEG2 = NULL;
+LPTEXTURE texEG3 = NULL;
+LPTEXTURE texEG4 = NULL;
+
+LPTEXTURE texER1 = NULL;
+LPTEXTURE texER2 = NULL;
+LPTEXTURE texER3 = NULL;
+LPTEXTURE texER4 = NULL;
+
+
+LPTEXTURE texBulletUp = NULL;
+LPTEXTURE texBulletDown = NULL;
+LPTEXTURE texBulletLeft = NULL;
+LPTEXTURE texBulletRight = NULL;
 LPTEXTURE texMisc = NULL;
 CBullet* bullet;
+CBullet* ew1;
 vector<LPGAMEOBJECT> objects;  
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -89,41 +132,83 @@ void LoadResources()
 	texTank5 = game->LoadTexture(TEXTURE_PATH_TANK5);
 	texTank3 = game->LoadTexture(TEXTURE_PATH_TANK3);
 	texTank4 = game->LoadTexture(TEXTURE_PATH_TANK4);
+
 	texMisc = game->LoadTexture(TEXTURE_PATH_MISC);
-	texBullet = game->LoadTexture(TEXTURE_PATH_BULLET);
-	bullet = new CBullet(0, 0, 0.0, 0.0, texBullet);
+
+	texBulletUp = game->LoadTexture(TEXTURE_PATH_BULLET1);
+	texBulletDown = game->LoadTexture(TEXTURE_PATH_BULLET3);
+	texBulletLeft = game->LoadTexture(TEXTURE_PATH_BULLET2);
+	texBulletRight = game->LoadTexture(TEXTURE_PATH_BULLET4);
+
+	texEW1 = game->LoadTexture(TEXTURE_PATH_EW1);
+	texEW2 = game->LoadTexture(TEXTURE_PATH_EW2);
+	texEW3 = game->LoadTexture(TEXTURE_PATH_EW3);
+	texEW4 = game->LoadTexture(TEXTURE_PATH_EW4);
+
+	texEG1 = game->LoadTexture(TEXTURE_PATH_EG1);
+	texEG2 = game->LoadTexture(TEXTURE_PATH_EG2);
+	texEG3 = game->LoadTexture(TEXTURE_PATH_EG3);
+	texEG4 = game->LoadTexture(TEXTURE_PATH_EG4);
+
+	texER1 = game->LoadTexture(TEXTURE_PATH_ER1);
+	texER2 = game->LoadTexture(TEXTURE_PATH_ER2);
+	texER3 = game->LoadTexture(TEXTURE_PATH_ER3);
+	texER4 = game->LoadTexture(TEXTURE_PATH_ER4);
+
+	ew1 = new CBullet(0, 0, 0.0, 0.0, texBulletUp, texBulletDown, texBulletLeft, texBulletRight);
+	bullet = new CBullet(0, 0, 0.0, 0.0, texBulletUp,texBulletDown,texBulletLeft,texBulletRight);
 	tank = new CTank(TANK_START_X, TANK_START_Y, TANK_START_VX, TANK_START_VY, texTank1, texTank3,texTank5,texTank4, bullet);
+
+	enemys.clear();
+
+	for (int i = 0; i < 2; i++) {
+		float x = 100 + i * 50; // Cách đều nhau 50px
+		float y = 50;
+
+		// Tạo đạn riêng cho mỗi enemy
+		CBullet* enemyBullet = new CBullet(0, 0, 0.0, 0.0, texBulletUp, texBulletDown, texBulletLeft, texBulletRight);
+
+		// Enemy màu trắng
+		enemys.push_back(new CEnemy(x, y, 0.05f, 0, texEW1, texEW2, texEW3, texEW4, enemyBullet, 1,true));
+
+		// Enemy màu xanh
+		enemys.push_back(new CEnemy(x*1.5, y*1.5 , 0.05f, 0, texEG1, texEG2, texEG3, texEG4, enemyBullet, 2,true));
+
+		// Enemy màu đỏ
+		enemys.push_back(new CEnemy(x*2, y*2 , 0.05f, 0, texER1, texER2, texER3, texER4, enemyBullet, 3,true));
+	}
+
+	for (auto enemy : enemys) {
+		objects.push_back(enemy);
+	}
+
 	//brick = new CBrick(BRICK_X, BRICK_Y, texBrick);
 	objects.push_back(tank);
 
 	
-	// objects.push_back(Tank);
-	// for(i)		 
-	//		objects.push_back(new CGameObject(BRICK_X+i*BRICK_WIDTH,....);
-	//
-
-	//
-	// int x = BRICK_X;
-	// for(i)
-	//		... new CGameObject(x,.... 
-	//		x+=BRICK_WIDTH;
 }
 
-/*
-	Update world status for this frame
-	dt: time period between beginning of last frame and beginning of this frame
-*/
 void Update(DWORD dt)
 {
-	/*
-	for (int i=0;i<n;i++)
-		objects[i]->Update(dt);
-	*/
-
 	tank->Update(dt);
-	
 
-	//DebugOutTitle(L"01 - Skeleton %0.1f, %0.1f", tank->GetX(), tank->GetY());
+	for (auto& enemy : enemys) {
+		enemy->Update(dt);
+
+		// Nếu enemy đang active thì kiểm tra va chạm với đạn của tank
+		if (enemy->IsActive() && tank->GetBullet()->getActive() && tank->CheckCollision(enemy, tank->GetBullet())) {
+			enemy->TakeDamage(texEW1,texEW3,texEW2,texEW4,texEG1,texEG3,texEG2,texEG4);
+			tank->GetBullet()->SetActive(false); // Đạn của tank biến mất sau khi bắn trúng
+		}
+		if (enemy->GetBullet()->getActive() && tank->GetBullet()->getActive() && enemy->CheckCollision(enemy->GetBullet(), tank->GetBullet()))
+		{
+			tank->GetBullet()->SetActive(false);
+			enemy->GetBullet()->SetActive(false);
+		}
+	}
+
+	// Xoá các enemy không còn tồn tại
+	enemys.erase(std::remove_if(enemys.begin(), enemys.end(), [](CEnemy* e) { return !e->IsActive(); }), enemys.end());
 }
 
 /*
@@ -155,10 +240,13 @@ void Render()
 			tank->GetBullet()->Render();
 
 		}
-		DebugOutTitle(L"01 - Skeleton %0.1f, %0.1f", tank->GetBullet()->GetX(), tank->GetBullet()->GetY());
-		// Uncomment this line to see how to draw a porttion of a texture  
-		//g->Draw(10, 10, texMisc, 300, 117, 317, 134);
-		//g->Draw(10, 10, textank, 215, 120, 234, 137);
+		for (auto& enemy : enemys) {
+			enemy->Render();
+			if (enemy->GetBullet()->getActive()) {
+				enemy->GetBullet()->Render();
+			}
+		}
+		//DebugOutTitle(L"01 - Skeleton %0.1f, %0.1f", tank->GetBullet()->GetX(), tank->GetBullet()->GetY());
 
 		spriteHandler->End();
 		pSwapChain->Present(0, 0);
