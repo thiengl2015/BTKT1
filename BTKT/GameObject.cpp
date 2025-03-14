@@ -203,21 +203,21 @@ void CEnemy::Update(DWORD dt)
 void CEnemy::TakeDamage(LPTEXTURE EWUp, LPTEXTURE EWDown, LPTEXTURE EWLeft, LPTEXTURE EWRight, LPTEXTURE EGUp, LPTEXTURE EGDown, LPTEXTURE EGLeft, LPTEXTURE EGRight)
 {
 	color--;
-	if (color == 2)
+	if (color == 2) // Xe xanh -> Xe trắng
 	{
 		texUp = EWUp;
 		texDown = EWDown;
 		texLeft = EWLeft;
 		texRight = EWRight;
 	}
-	else if (color == 1)
+	else if (color == 1) // Xe đỏ -> Xe xanh
 	{
-		texUp = EWUp;
-		texDown = EWDown;
-		texLeft = EWLeft;
-		texRight = EWRight;
+		texUp = EGUp;
+		texDown = EGDown;
+		texLeft = EGLeft;
+		texRight = EGRight;
 	}
-	else if (color <= 0)
+	else if (color <= 0) // Xe trắng -> Biến mất
 	{
 		this->SetActive(false);
 	}

@@ -161,21 +161,18 @@ void LoadResources()
 
 	enemys.clear();
 
-	for (int i = 0; i < 2; i++) {
-		float x = 100 + i * 50; // Cách đều nhau 50px
-		float y = 50;
+	for (int i = 0; i < 7; i++) {
+		float x = 20 + i * 40; // Cách đều nhau 40px
+		float y = 10; // Sát trên cùng màn hình
 
-		// Tạo đạn riêng cho mỗi enemy
 		CBullet* enemyBullet = new CBullet(0, 0, 0.0, 0.0, texBulletUp, texBulletDown, texBulletLeft, texBulletRight);
 
-		// Enemy màu trắng
-		enemys.push_back(new CEnemy(x, y, 0.05f, 0, texEW1, texEW2, texEW3, texEW4, enemyBullet, 1,true));
-
-		// Enemy màu xanh
-		enemys.push_back(new CEnemy(x*1.5, y*1.5 , 0.05f, 0, texEG1, texEG2, texEG3, texEG4, enemyBullet, 2,true));
-
-		// Enemy màu đỏ
-		enemys.push_back(new CEnemy(x*2, y*2 , 0.05f, 0, texER1, texER2, texER3, texER4, enemyBullet, 3,true));
+		if (i < 2) // 2 xe trắng
+			enemys.push_back(new CEnemy(x, y, 0.05f, 0, texEW1, texEW2, texEW3, texEW4, enemyBullet, 1, true));
+		else if (i < 5) // 3 xe xanh
+			enemys.push_back(new CEnemy(x, y, 0.05f, 0, texEG1, texEG2, texEG3, texEG4, enemyBullet, 2, true));
+		else // 2 xe đỏ
+			enemys.push_back(new CEnemy(x, y, 0.05f, 0, texER1, texER2, texER3, texER4, enemyBullet, 3, true));
 	}
 
 	for (auto enemy : enemys) {
